@@ -4,7 +4,7 @@ const loadToken = require("./modules/loadToken");
 const ACCESS_TOKEN = loadToken();
 const collectGoldenDuck = require("./scripts/collectGoldenDuck");
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   collectGoldenDuck(ACCESS_TOKEN);
   res.send("Express on Vercel");
 });
