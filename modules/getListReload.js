@@ -1,6 +1,6 @@
 const getAction = require("../actions/get");
 const config = require("../config.json");
-const addLog = require("./addLog");
+const logger = require("../logger");
 const sleep = require("./sleep");
 
 let isErrorOccured = false;
@@ -54,23 +54,23 @@ async function getListReloadInternal(token, ua, new_game) {
 
       if (status >= 500) {
         console.log("Lost connect, auto connect after 5s, retry to die");
-        addLog(`getListReload error ${status}`, "error");
+        logger.error(`getListReload error ${status}`, "error");
         await sleep(5);
         isErrorOccured = true;
         return null;
       } else if (status === 401) {
         console.log(`\nToken loi hoac het han roi\n`);
-        addLog(`getListReload error Token loi hoac het han roi`, "error");
+        logger.error(`getListReload error Token loi hoac het han roi`, "error");
         process.exit(1);
       } else if (status === 400) {
-        addLog(
+        logger.error(
           `getListReload error ${error.response.data.error_code}`,
           "error"
         );
         return error.response.data;
       } else {
         console.log("Lost connect, auto connect after 3s, retry to die");
-        addLog(`getListReload error ${status} undefined`, "error");
+        logger.error(`getListReload error ${status} undefined`, "error");
         await sleep(3);
         isErrorOccured = true;
         return null;
@@ -78,13 +78,13 @@ async function getListReloadInternal(token, ua, new_game) {
     } else if (error.request) {
       console.log("request", error.request);
       console.log("Lost connect, auto connect after 5s, retry to die");
-      addLog(`getListReload error request ${error.request}`, "error");
+      logger.error(`getListReload error request ${error.request}`, "error");
       await sleep(5);
       return null;
     } else {
       console.log("error", error.message);
       console.log("Lost connect, auto connect after 5s, retry to die");
-      addLog(`getListReload error ${error.message}`, "error");
+      logger.error(`getListReload error ${error.message}`, "error");
       await sleep(5);
       return null;
     }

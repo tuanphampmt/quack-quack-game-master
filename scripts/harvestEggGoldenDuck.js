@@ -8,7 +8,7 @@ const claimGoldenDuck = require("../modules/claimGoldenDuck");
 const goldenDuckRewardText = require("../modules/goldenDuckRewardText");
 const collectDuck = require("../modules/collectDuck");
 const randomSleep = require("../modules/randomSleep");
-const addLog = require("../modules/addLog");
+const logger = require("../logger");
 const randomUseragent = require("random-useragent");
 const getMaxDuck = require("../modules/getMaxDuck");
 const Timer = require("easytimer.js").Timer;
@@ -249,11 +249,11 @@ async function harvestEggGoldenDuck(token) {
         if (data.type === 0) {
           msg = "Better luck next time";
           console.log(`[ GOLDEN DUCK 🐥 ] : ${msg}`);
-          addLog(msg, "golden");
+          logger.error(msg, "golden");
         } else if (data.type === 1 || data.type === 4) {
           msg = `${goldenDuckRewardText(data)} -> skip`;
           console.log(`[ GOLDEN DUCK 🐥 ] : ${msg}`);
-          addLog(msg, "golden");
+          logger.error(msg, "golden");
         } else {
           const claimGoldenDuckData = await claimGoldenDuck(accessToken, ua);
 
@@ -268,7 +268,7 @@ async function harvestEggGoldenDuck(token) {
 
           msg = goldenDuckRewardText(data);
           console.log(`[ GOLDEN DUCK 🐥 ] : ${msg}`);
-          addLog(msg, "golden");
+          logger.error(msg, "golden");
         }
       } else {
         timeToGoldenDuck = getGoldenDuckInfoData.data.time_to_golden_duck;

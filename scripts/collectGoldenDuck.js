@@ -1,7 +1,7 @@
 const getGoldenDuckInfo = require("../modules/getGoldenDuckInfo");
 const getGoldenDuckReward = require("../modules/getGoldenDuckReward");
 const claimGoldenDuck = require("../modules/claimGoldenDuck");
-const addLog = require("../modules/addLog");
+const logger = require("../logger");
 const Timer = require("easytimer.js").Timer;
 const randomUseragent = require("random-useragent");
 const goldenDuckRewardText = require("../modules/goldenDuckRewardText");
@@ -11,7 +11,7 @@ const randomSleep = require("../modules/randomSleep");
 const ua = randomUseragent.getRandom((ua) => {
   return ua.browserName === "Chrome";
 });
-// console.log(ua);
+// logger.info(ua);
 
 const ERROR_MESSAGE =
   "Take a screenshot and create a GitHub issue so I can find a fix";
@@ -36,16 +36,16 @@ async function collectGoldenDuckInternal(token) {
     );
 
     if (collectGoldenDuckInternalData.error_code !== "") {
-      console.log(
+      logger.info(
         "collectGoldenDuckInternalData error",
         collectGoldenDuckInternalData.error_code
       );
-      console.log(ERROR_MESSAGE);
+      logger.info(ERROR_MESSAGE);
     } else {
       if (collectGoldenDuckInternalData.data.time_to_golden_duck === 0) {
         clearInterval(myInterval);
 
-        console.log(
+        logger.info(
           "[ GOLDEN DUCK 🐥 ] : The monster under the river appeared"
         );
         const getGoldenDuckRewardData = await getGoldenDuckReward(
@@ -59,12 +59,12 @@ async function collectGoldenDuckInternal(token) {
 
         if (data.type === 0) {
           msg = "Better luck next time";
-          console.log(`[ GOLDEN DUCK 🐥 ] : ${msg}`);
-          addLog(msg, "golden");
+          logger.info(`[ GOLDEN DUCK 🐥 ] : ${msg}`);
+          logger.info(msg, "golden");
         } else if (data.type === 1 || data.type === 4) {
           msg = `${goldenDuckRewardText(data)} -> skip`;
-          console.log(`[ GOLDEN DUCK 🐥 ] : ${msg}`);
-          addLog(msg, "golden");
+          logger.info(`[ GOLDEN DUCK 🐥 ] : ${msg}`);
+          logger.info(msg, "golden");
         } else {
           const claimGoldenDuckData = await claimGoldenDuck(accessToken, ua);
 
@@ -78,8 +78,8 @@ async function collectGoldenDuckInternal(token) {
           }
 
           msg = goldenDuckRewardText(data);
-          console.log(`[ GOLDEN DUCK 🐥 ] : ${msg}`);
-          addLog(`${goldenDuckRewardText(data)}`, "golden");
+          logger.info(`[ GOLDEN DUCK 🐥 ] : ${msg}`);
+          logger.info(`${goldenDuckRewardText(data)}`, "golden");
         }
 
         await randomSleep();
@@ -122,29 +122,29 @@ async function collectGoldenDuck(token) {
     run = true;
   }
 
-  console.log("[ ONLY GOLDEN DUCK MODE ]");
-  console.log();
-  console.log("Link Tool : [ j2c.cc/quack ]");
-  console.log(
+  logger.info("[ ONLY GOLDEN DUCK MODE ]");
+  logger.info();
+  logger.info("Link Tool : [ j2c.cc/quack ]");
+  logger.info(
     `Balances : [ ${balanceEgg.toFixed(2)} EGG 🥚 ] [ ${balancePet.toFixed(
       2
     )} PET 🐸 ]`
   );
-  console.log();
-  console.log(
+  logger.info();
+  logger.info(
     `Run time : [ ${timerInstance
       .getTimeValues()
       .toString(["days", "hours", "minutes", "seconds"])} ]`
   );
-  console.log(
+  logger.info(
     `Total harvest : [ ${eggs.toFixed(2)} EGG 🥚 ] [ ${pets.toFixed(
       2
     )} PET 🐸 ]`
   );
-  console.log();
+  logger.info();
 
   msg = `[ GOLDEN DUCK 🐥 ] : [ ${goldenDuck} | see you in ${timeToGoldenDuck}s ]`;
-  console.log(msg);
+  logger.info(msg);
 
   collectGoldenDuckInternal(token);
 }

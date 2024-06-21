@@ -4,7 +4,7 @@ const layEgg = require("../modules/layEgg");
 const getGoldenDuckInfo = require("../modules/getGoldenDuckInfo");
 const getGoldenDuckReward = require("../modules/getGoldenDuckReward");
 const claimGoldenDuck = require("../modules/claimGoldenDuck");
-const addLog = require("../modules/addLog");
+const logger = require("../logger");
 const getMaxDuck = require("../modules/getMaxDuck");
 const collectDuck = require("../modules/collectDuck");
 const removeDuck = require("../modules/removeDuck");
@@ -219,7 +219,7 @@ async function collectFromListInternal(token, listNests, listDucks) {
             rmDuck.metadata
           )} ] -> deleted`;
           console.log(msg);
-          addLog(msg, "farm");
+          logger.error(msg, "farm");
 
           listDucks = listDucks.filter((d) => d.id !== rmDuck.id);
           collectFromList(token, listNests, listDucks);
@@ -294,7 +294,7 @@ async function collectFromListInternal(token, listNests, listDucks) {
           isDeleted ? " > deleted" : ""
         }`;
         console.log(msg);
-        if (!isDeleted) addLog(msg, "farm");
+        if (!isDeleted) logger.error(msg, "farm");
 
         const layEggData = await layEgg(token, ua, nest.id, duck.id);
         // console.log("layEggData", layEggData);
@@ -427,11 +427,11 @@ async function hatchEggGoldenDuck(token) {
         if (data.type === 0) {
           msg = "Better luck next time";
           console.log(msg);
-          addLog(`[ GOLDEN DUCK 🐥 ] :  ${msg}`, "golden");
+          logger.info(`[ GOLDEN DUCK 🐥 ] :  ${msg}`, "golden");
         } else if (data.type === 1 || data.type === 4) {
           msg = `${goldenDuckRewardText(data)} -> skip`;
           console.log(` "[ GOLDEN DUCK 🐥 ] : ${msg}`);
-          addLog(msg, "golden");
+          logger.info(msg, "golden");
         } else {
           const claimGoldenDuckData = await claimGoldenDuck(accessToken, ua);
 
@@ -446,7 +446,7 @@ async function hatchEggGoldenDuck(token) {
 
           msg = goldenDuckRewardText(data);
           console.log(`[ GOLDEN DUCK 🐥 ] : ${msg}`);
-          addLog(msg, "golden");
+          logger.info(msg, "golden");
         }
       } else {
         timeToGoldenDuck = getGoldenDuckInfoData.data.time_to_golden_duck;

@@ -1,7 +1,7 @@
 const postAction = require("../actions/post");
 const sleep = require("./sleep");
 const config = require("../config.json");
-const addLog = require("./addLog");
+const logger = require("../logger");
 
 async function hatchEgg(token, ua, nest_id) {
   let retry = 0;
@@ -32,34 +32,37 @@ async function hatchEggInternal(token, ua, nest_id) {
       const status = error.response.status;
       if (status >= 500) {
         console.log("Lost connect, auto connect after 5s, retry to die");
-        addLog(`hatchEggInternal error ${status}`, "error");
+        logger.error(`hatchEggInternal error ${status}`, "error");
         await sleep(5);
         return null;
       } else if (status === 401) {
         console.log(`\nToken loi hoac het han roi\n`);
-        addLog(`hatchEggInternal error Token loi hoac het han roi`, "error");
+        logger.error(
+          `hatchEggInternal error Token loi hoac het han roi`,
+          "error"
+        );
         process.exit(1);
       } else if (status === 400) {
-        addLog(
+        logger.error(
           `hatchEggInternal error ${error.response.data.error_code}`,
           "error"
         );
         return error.response.data;
       } else {
-        addLog(`hatchEggInternal error ${status} undefined`, "error");
+        logger.error(`hatchEggInternal error ${status} undefined`, "error");
         await sleep(3);
         return null;
       }
     } else if (error.request) {
       console.log("request", error.request);
       console.log("Lost connect, auto connect after 3s, retry to die");
-      addLog(`hatchEggInternal error request ${error.request}`, "error");
+      logger.error(`hatchEggInternal error request ${error.request}`, "error");
       await sleep(3);
       return null;
     } else {
       console.log("error", error.message);
       console.log("Lost connect, auto connect after 3s, retry to die");
-      addLog(`hatchEggInternal error ${error.message}`, "error");
+      logger.error(`hatchEggInternal error ${error.message}`, "error");
       await sleep(3);
       return null;
     }

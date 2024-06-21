@@ -1,7 +1,7 @@
 const postAction = require("../actions/post");
 const sleep = require("./sleep");
 const config = require("../config.json");
-const addLog = require("./addLog");
+const logger = require("../logger");
 
 async function removeDuck(token, ua, duck_id) {
   let retry = 0;
@@ -34,35 +34,41 @@ async function removeDuckInternal(token, ua, duck_id) {
 
       if (status >= 500) {
         console.log("Lost connect, auto connect after 5s, retry to die");
-        addLog(`removeDuckInternal error ${status}`, "error");
+        logger.error(`removeDuckInternal error ${status}`, "error");
         await sleep(5);
         return null;
       } else if (status === 401) {
         console.log(`\nToken loi hoac het han roi\n`);
-        addLog(`removeDuckInternal error Token loi hoac het han roi`, "error");
+        logger.error(
+          `removeDuckInternal error Token loi hoac het han roi`,
+          "error"
+        );
         process.exit(1);
       } else if (status === 400) {
-        addLog(
+        logger.error(
           `removeDuckInternal error ${error.response.data.error_code}`,
           "error"
         );
         return error.response.data;
       } else {
         console.log("Lost connect, auto connect after 3s, retry to die");
-        addLog(`removeDuckInternal error ${status} undefined`, "error");
+        logger.error(`removeDuckInternal error ${status} undefined`, "error");
         await sleep(3);
         return null;
       }
     } else if (error.request) {
       console.log("request", error.request);
       console.log("Lost connect, auto connect after 3s, retry to die");
-      addLog(`removeDuckInternal error request ${error.request}`, "error");
+      logger.error(
+        `removeDuckInternal error request ${error.request}`,
+        "error"
+      );
       await sleep(3);
       return null;
     } else {
       console.log("error", error.message);
       console.log("Lost connect, auto connect after 3s, retry to die");
-      addLog(`removeDuckInternal error ${error.message}`, "error");
+      logger.error(`removeDuckInternal error ${error.message}`, "error");
       await sleep(3);
       return null;
     }

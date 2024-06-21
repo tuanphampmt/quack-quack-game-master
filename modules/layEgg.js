@@ -1,7 +1,7 @@
 const postAction = require("../actions/post");
 const sleep = require("./sleep");
 const config = require("../config.json");
-const addLog = require("./addLog");
+const logger = require("../logger");
 
 async function layEgg(token, ua, nest_id, duck_id) {
   let retry = 0;
@@ -33,35 +33,38 @@ async function layEggInternal(token, ua, nest_id, duck_id) {
 
       if (status >= 500) {
         console.log("Lost connect, auto connect after 5s, retry to die");
-        addLog(`layEggInternal error ${status}`, "error");
+        logger.error(`layEggInternal error ${status}`, "error");
         await sleep(5);
         return null;
       } else if (status === 401) {
         console.log(`\nToken loi hoac het han roi\n`);
-        addLog(`layEggInternal error Token loi hoac het han roi`, "error");
+        logger.error(
+          `layEggInternal error Token loi hoac het han roi`,
+          "error"
+        );
         process.exit(1);
       } else if (status === 400) {
-        addLog(
+        logger.error(
           `layEggInternal error ${error.response.data.error_code}`,
           "error"
         );
         return error.response.data;
       } else {
         console.log("Lost connect, auto connect after 3s, retry to die");
-        addLog(`layEggInternal error ${status} undefined`, "error");
+        logger.error(`layEggInternal error ${status} undefined`, "error");
         await sleep(3);
         return null;
       }
     } else if (error.request) {
       console.log("request", error.request);
       console.log("Lost connect, auto connect after 3s, retry to die");
-      addLog(`layEggInternal error request ${error.request}`, "error");
+      logger.error(`layEggInternal error request ${error.request}`, "error");
       await sleep(3);
       return null;
     } else {
       console.log("error", error.message);
       console.log("Lost connect, auto connect after 3s, retry to die");
-      addLog(`layEggInternal error ${error.message}`, "error");
+      logger.error(`layEggInternal error ${error.message}`, "error");
       await sleep(3);
       return null;
     }

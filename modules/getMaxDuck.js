@@ -1,7 +1,7 @@
 const getAction = require("../actions/get");
 const sleep = require("./sleep");
 const config = require("../config.json");
-const addLog = require("./addLog");
+const logger = require("../logger");
 
 async function getMaxDuck(token, ua) {
   let retry = 0;
@@ -27,35 +27,41 @@ async function getMaxDuckInternal(token, ua) {
       const status = error.response.status;
       if (status >= 500) {
         console.log("Lost connect, auto connect after 5s, retry to die");
-        addLog(`getMaxDuckInternal error ${status}`, "error");
+        logger.error(`getMaxDuckInternal error ${status}`, "error");
         await sleep(5);
         return null;
       } else if (status === 401) {
         console.log(`\nToken loi hoac het han roi\n`);
-        addLog(`getMaxDuckInternal error Token loi hoac het han roi`, "error");
+        logger.error(
+          `getMaxDuckInternal error Token loi hoac het han roi`,
+          "error"
+        );
         process.exit(1);
       } else if (status === 400) {
-        addLog(
+        logger.error(
           `getMaxDuckInternal error ${error.response.data.error_code}`,
           "error"
         );
         return error.response.data.error_code;
       } else {
         console.log("Lost connect, auto connect after 3s, retry to die");
-        addLog(`getMaxDuckInternal error ${status} undefined`, "error");
+        logger.error(`getMaxDuckInternal error ${status} undefined`, "error");
         await sleep(3);
         return null;
       }
     } else if (error.request) {
       console.log("request", error.request);
       console.log("Lost connect, auto connect after 3s, retry to die");
-      addLog(`getMaxDuckInternal error request ${error.request}`, "error");
+      logger.error(
+        `getMaxDuckInternal error request ${error.request}`,
+        "error"
+      );
       await sleep(3);
       return null;
     } else {
       console.log("error", error.message);
       console.log("Lost connect, auto connect after 3s, retry to die");
-      addLog(`getMaxDuckInternal error ${error.message}`, "error");
+      logger.error(`getMaxDuckInternal error ${error.message}`, "error");
       await sleep(3);
       return null;
     }
