@@ -7,7 +7,7 @@ const ACCESS_TOKEN =
 app.get("/", (req, res) => {
   res.status(200).json("Welcome, your app is working well");
 });
-
+// HEHE
 collectGoldenDuck(ACCESS_TOKEN);
 
 app.listen(3000, () => {
