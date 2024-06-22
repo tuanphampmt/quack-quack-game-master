@@ -12,8 +12,8 @@ app.get("/", (req, res) => {
 
 (async () => {
   await Promise.all(
-    ACCESS_TOKEN.map(async () => {
-      await collectGoldenDuck(ACCESS_TOKEN);
+    ACCESS_TOKEN.map(async (item) => {
+      await collectGoldenDuck(item);
     })
   );
 })();
