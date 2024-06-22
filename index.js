@@ -10,13 +10,16 @@ app.get("/", (req, res) => {
   res.status(200).json("Welcome, your app is working well");
 });
 
-(async () => {
-  await Promise.all(
-    ACCESS_TOKEN.map(async (item) => {
-      await collectGoldenDuck(item);
-    })
-  );
-})();
+// (async () => {
+//   await Promise.all(
+//     ACCESS_TOKEN.map(async (item) => {
+//       await collectGoldenDuck(item);
+//     })
+//   );
+// })();
+
+collectGoldenDuck(ACCESS_TOKEN[0]);
+collectGoldenDuck(ACCESS_TOKEN[1]);
 
 app.listen(3000, () => {
   console.log("Server ready on port 3000.");
